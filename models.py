@@ -3,7 +3,7 @@
 # from app import profile
 from datetime import datetime
 
-from flask_bcrypt import Bcrypt
+from flask_bcrypt import Bcrypt, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 
 bcrypt = Bcrypt()

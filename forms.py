@@ -30,3 +30,13 @@ class LoginForm(FlaskForm):
 
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[Length(min=6)])
+
+
+class UserAddFormRestricted(UserAddForm):
+    """Used to display user profile info in edit form username as readonly"""
+    # username = StringField('Username', validators=[DataRequired()])
+    form_widget_args = {
+        "username": {
+            "readonly": True, 
+        }
+    }

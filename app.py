@@ -6,6 +6,7 @@ from sqlalchemy.exc import IntegrityError
 # from flask_login import LoginManager, logout_user
 
 from forms import UserAddForm, LoginForm, MessageForm
+    # UserAddFormRestricted
 from models import db, connect_db, User, Message
 from seed import seed_database
 
@@ -228,7 +229,35 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    # IMPLEMENT THIS
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
+    user = User.query.get_or_404(g.user.id)
+    form = UserAddForm(obj=user)
+    id = user.id
+
+    if request.method == "POST":
+        g.user.password = form.password.data,
+        g.user.email = form.email.data,
+        g.user.image_url = form.image_url.data or User.image_url.default.arg,
+        g.user.location = form.location.data,
+        g.user.bio = form.bio.data,
+        g.user.header_image_url = form.header_image_url.data or User.header_image_url.default.arg
+        g.user.password = form.password.data
+
+# ******************** doesn't work *************************
+
+        user = User.authenticate(g.user.username,
+                                 bytes(g.user.password, "utf-8"))
+        if user:
+            db.session.commit()
+            flash('Profile updated', 'success')
+            return redirect('/')
+
+        flash('Access unauthorized', "danger")
+
+    return render_template('users/edit.html', form=form, id=id)
 
 
 @app.route('/users/delete', methods=["POST"])

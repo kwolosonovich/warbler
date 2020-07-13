@@ -6,11 +6,15 @@ from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm
 from models import db, connect_db, User, Message
+from seed import seed_database
 
 CURR_USER_KEY = "curr_user"
-
+# TODO: set to False before deploying in production
+DEBUG=True
 app = Flask(__name__)
 
+
+    
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
 app.config['SQLALCHEMY_DATABASE_URI'] = (
@@ -24,6 +28,10 @@ toolbar = DebugToolbarExtension(app)
 
 connect_db(app)
 
+if DEBUG:
+    seed_database()
+else:
+    db.create_all()
 
 ##############################################################################
 # User signup/login/logout
@@ -320,3 +328,6 @@ def add_header(req):
     req.headers["Expires"] = "0"
     req.headers['Cache-Control'] = 'public, max-age=0'
     return req
+
+
+app.run(debug=DEBUG)

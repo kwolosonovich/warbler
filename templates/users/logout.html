@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block body_class %}onboarding{% endblock %}
+
+{% block content %}
+
+  <div class="row justify-content-md-center">
+    <div class="col-md-7 col-lg-5">
+      <h2 class="join-message">Are you sure you want to logout?</h2>
+
+      <form method="POST" action="/logout/{{ g.user.id }}">
+        <button class="btn btn-primary btn-block btn-lg">Logout</button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

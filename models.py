@@ -1,5 +1,6 @@
 """SQLAlchemy models for Warbler."""
 
+# from app import profile
 from datetime import datetime
 
 from flask_bcrypt import Bcrypt
@@ -168,6 +169,20 @@ class User(db.Model):
                 return user
 
         return False
+    # @property
+    # def is_authenticated(self):
+    #     return self.authenticated
+        
+    # @property
+    # def is_active(self):
+    #     return True
+    
+    # @property
+    # def is_anonymous(self):
+    #     return False
+    
+    # def get_id(self):
+    #     return str(self.id)
 
 
 class Message(db.Model):

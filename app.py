@@ -3,6 +3,7 @@ import os
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
+# from flask_login import LoginManager, logout_user
 
 from forms import UserAddForm, LoginForm, MessageForm
 from models import db, connect_db, User, Message
@@ -12,7 +13,9 @@ CURR_USER_KEY = "curr_user"
 # TODO: set to False before deploying in production
 DEBUG=True
 app = Flask(__name__)
-
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view="users.login"
 
     
 # Get DB_URI from environ variable (useful for production/testing) or,
@@ -120,9 +123,12 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
+    print("called")
 
-    # IMPLEMENT THIS
+    do_logout()
+    flash("Logged you out")
 
+    return redirect('/login')
 
 ##############################################################################
 # General user routes:

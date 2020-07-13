@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms.validators import DataRequired, Email, Length, Optional, URL
 
 
 class MessageForm(FlaskForm):
@@ -12,10 +12,17 @@ class MessageForm(FlaskForm):
 class UserAddForm(FlaskForm):
     """Form for adding users."""
 
+    url_validator = URL(message='Please provide valid URL')
+    optional = Optional(strip_whitespace=True)
+
+
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[Length(min=6)])
-    image_url = StringField('(Optional) Image URL')
+    image_url = StringField('(Optional) Image URL', validators=[optional, url_validator])
+    location = StringField('(Optional) Location', validators=[optional])
+    bio = StringField('(Optional) Bio', validators=[optional])
+    header_image_url = StringField('(Optional) Heading Image', validators=[optional, url_validator])
 
 
 class LoginForm(FlaskForm):

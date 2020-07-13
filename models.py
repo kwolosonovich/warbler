@@ -42,6 +42,24 @@ class Likes(db.Model):
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade')
     )
+    @classmethod
+    def signup(cls, username, email, password, image_url, location, bio, header_image_url):
+        """Sign up user.
+
+        Hashes password and adds user to system.
+        """
+
+        hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+
+        user = User(
+            username=username,
+            email=email,
+            password=hashed_pwd,
+            image_url=image_url,
+            location=location,
+            bio=bio,
+            header_image_url=header_image_url
+        )
 
     message_id = db.Column(
         db.Integer,
@@ -77,17 +95,19 @@ class User(db.Model):
         default="/static/images/default-pic.png",
     )
 
-    header_image_url = db.Column(
+    location = db.Column(
         db.Text,
-        default="/static/images/warbler-hero.jpg"
+        nullable=True,
     )
 
     bio = db.Column(
         db.Text,
+        nullable=True,
     )
 
-    location = db.Column(
+    header_image_url = db.Column(
         db.Text,
+        default="/static/images/warbler-hero.jpg"
     )
 
     password = db.Column(
@@ -131,8 +151,11 @@ class User(db.Model):
         found_user_list = [user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
+
+# ************************************* ADD
+
     @classmethod
-    def signup(cls, username, email, password, image_url):
+    def signup(cls, username, email, password, image_url, location, bio, header_image_url):
         """Sign up user.
 
         Hashes password and adds user to system.
@@ -145,6 +168,9 @@ class User(db.Model):
             email=email,
             password=hashed_pwd,
             image_url=image_url,
+            location=location,
+            bio=bio,
+            header_image_url=header_image_url
         )
 
         db.session.add(user)

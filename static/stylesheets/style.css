@@ -226,6 +226,7 @@ nav + .container {
 .user-stats > .ml-auto {
   display: flex;
   align-items: center;
+  min-height: fit-content;
 }
 
 .user-stats > .ml-auto .btn {
@@ -311,22 +312,28 @@ nav + .container {
   position: relative;
   background: white;
   margin-top: 20px;
+  min-height: max-content;
+
 }
 
 .user-card > div {
   position: absolute;
   background: white;
+  min-height: fit-content;
+
 }
 
 .user-card form {
   margin-top: 5px;
   margin-right: 5px;
+  min-height: fit-content;
 }
 
 .user-card form .btn {
   min-width: 89px;
   padding: 4px 12px;
   font-size: 12px;
+  min-height: fit-content;
 }
 
 .card-hero {
@@ -377,6 +384,7 @@ nav + .container {
 .card-contents {
   display: flex;
   justify-content: space-between;
+   min-height: fit-content;
 }
 
 p.card-bio {
@@ -430,7 +438,7 @@ p.card-bio {
 
 #home-aside > .user-card {
   margin-top: 0;
-  overflow: hidden;
+  overflow: inherit;
 }
 
 #home-aside > .user-card .card-link {

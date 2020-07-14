@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_bootstrap import Bootstrap
 from sqlalchemy.exc import IntegrityError
 # from flask_login import LoginManager, logout_user
 
@@ -14,6 +15,7 @@ CURR_USER_KEY = "curr_user"
 # TODO: set to False before deploying in production
 DEBUG=True
 app = Flask(__name__)
+# Bootstrap(app)
 # login_manager = LoginManager()
 # login_manager.init_app(app)
 # login_manager.login_view="users.login"
@@ -26,7 +28,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = (
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = False
-app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = True
+app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', "it's a secret")
 toolbar = DebugToolbarExtension(app)
 
@@ -330,6 +332,16 @@ def messages_destroy(message_id):
     return redirect(f"/users/{g.user.id}")
 
 
+@app.route('/users/add_like/<int:msg_id>', methods=['POST'])
+def add_like(msg_id):
+    message = Message.query.get_or_404(msg_id)   
+    # like = Likes(g.user.id, msg_id)  
+    like = Likes.add_like(g.user.id, msg_id)
+
+    db.session.add(like)
+    db.session.commit()
+
+    return redirect('/')
 ##############################################################################
 # Homepage and error pages
 

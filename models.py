@@ -3,7 +3,7 @@
 # from app import profile
 from datetime import datetime
 
-from flask_bcrypt import Bcrypt, check_password_hash
+from flask_bcrypt import Bcrypt, check_password_hash, generate_password_hash
 from flask_sqlalchemy import SQLAlchemy
 
 bcrypt = Bcrypt()
@@ -195,20 +195,6 @@ class User(db.Model):
                 return user
 
         return False
-    # @property
-    # def is_authenticated(self):
-    #     return self.authenticated
-        
-    # @property
-    # def is_active(self):
-    #     return True
-    
-    # @property
-    # def is_anonymous(self):
-    #     return False
-    
-    # def get_id(self):
-    #     return str(self.id)
 
 
 class Message(db.Model):
@@ -249,3 +235,12 @@ def connect_db(app):
 
     db.app = app
     db.init_app(app)
+
+
+def authenticateCurrent(check_pw, current_password):
+
+    check_auth = bcrypt.generate_password_hash(check_pw)
+    
+    if check_auth == current_password:
+        return True
+

@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm
     # UserAddFormRestricted
-from models import db, connect_db, User, Message
+from models import db, connect_db, User, Message, authenticateCurrent
 from seed import seed_database
 
 CURR_USER_KEY = "curr_user"
@@ -244,13 +244,14 @@ def profile():
         g.user.location = form.location.data,
         g.user.bio = form.bio.data,
         g.user.header_image_url = form.header_image_url.data or User.header_image_url.default.arg
-        g.user.password = form.password.data
+        entered_password = form.password.data
+        
+        check_pw = entered_password
+        current_password = g.user.password
 
-# ******************** doesn't work *************************
+        authenticateCurrent(check_pw, current_password)
 
-        user = User.authenticate(g.user.username,
-                                 bytes(g.user.password, "utf-8"))
-        if user:
+        if True:
             db.session.commit()
             flash('Profile updated', 'success')
             return redirect('/')

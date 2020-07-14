@@ -142,9 +142,7 @@ def logout():
 @app.route('/users')
 def list_users():
     """Page with listing of users.
-
-    Can take a 'q' param in querystring to search by that username.
-    """
+    Can take a 'q' param in querystring to search by that username."""
 
     search = request.args.get('q')
 
@@ -288,10 +286,8 @@ def delete_user():
 
 @app.route('/messages/new', methods=["GET", "POST"])
 def messages_add():
-    """Add a message:
-
-    Show form if GET. If valid, update message and redirect to user page.
-    """
+    """Add a message - show form if GET. 
+    If valid, update message and redirect to user page."""
 
     if not g.user:
         flash("Access unauthorized.", "danger")
@@ -334,8 +330,12 @@ def messages_destroy(message_id):
 
 @app.route('/users/add_like/<int:msg_id>', methods=['POST'])
 def add_like(msg_id):
+
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+
     message = Message.query.get_or_404(msg_id)   
-    # like = Likes(g.user.id, msg_id)  
     like = Likes.add_like(g.user.id, msg_id)
 
     db.session.add(like)
@@ -349,12 +349,11 @@ def add_like(msg_id):
 @app.route('/')
 def homepage():
     """Show homepage:
-
-    - anon users: no messages
+    - users: no messages
     - logged in: 100 most recent messages of followed_users
     """
     # SELECT 
-    # f.user_being_followed_id, 
+    # f.user_being_followed_id,
     # f.user_following_id, 
     # m.text, 
     # m.timestamp,

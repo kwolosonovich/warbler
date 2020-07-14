@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm
     # UserAddFormRestricted
-from models import db, connect_db, User, Message, authenticateCurrent
+from models import db, connect_db, User, Message, authenticateCurrent, Follows, Likes
 from seed import seed_database
 
 CURR_USER_KEY = "curr_user"
@@ -178,8 +178,12 @@ def show_following(user_id):
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
-
+ 
+    # get the current user
     user = User.query.get_or_404(user_id)
+    
+    #
+    # follows = Follows.query
     return render_template('users/following.html', user=user)
 
 
@@ -337,14 +341,60 @@ def homepage():
     - anon users: no messages
     - logged in: 100 most recent messages of followed_users
     """
+    # SELECT 
+    # f.user_being_followed_id, 
+    # f.user_following_id, 
+    # m.text, 
+    # m.timestamp,
+    # m.id,
+    # m.user_id, 
+    # m.image_url,
+    # FROM follows f
+    # LEFT JOIN messages m
+    # ON f.user_being_followed_id = m.user_id
+    # WHERE f.user_being_followed_id = 223;
+
 
     if g.user:
-        messages = (Message
-                    .query
-                    .order_by(Message.timestamp.desc())
-                    .limit(100)
-                    .all())
+        #TODO: come back to this after follow button works
 
+        user_follows = (Follows
+                        .query
+                        .filter_by(user_following_id=g.user.id)
+                        .all())
+        #TODO: ask mentor - is there a way to do the following in query using sqlalchemy 
+        user_follows = [row.user_being_followed_id for row in user_follows]
+        
+        # same as previous line
+        # new_follows_rows = []
+        # for row in follow_rows:
+        #     new_follows_rows.append(row.user_being_followed_id)
+        
+        messages = Message.query.all()
+        # create message list
+        user_follows_message_ids = []
+        # check if the user currently is following another user - if false return last 100 messages
+        if len(user_follows) > 0:
+            for row in messages:
+                if row.user_id in user_follows:
+                    user_follows_message_ids.append(row.id)
+                    
+            
+            messages = (Message
+                        .query
+                        .filter(Message.id.in_(user_follows_message_ids))
+                        .order_by(Message.timestamp.desc())
+                        .limit(100)
+                        .all())  
+        else:
+            # TODO: ask mentor if we should leave this if they haven't followed anyone yet?
+            flash('Start following users to create a custom feed')
+            messages = (Message
+                        .query
+                        .order_by(Message.timestamp.desc())
+                        .limit(100)
+                        .all())
+        print()
         return render_template('home.html', messages=messages)
 
     else:
@@ -368,5 +418,5 @@ def add_header(req):
     req.headers['Cache-Control'] = 'public, max-age=0'
     return req
 
-
-app.run(debug=DEBUG)
+if __name__ == "__main__":
+    app.run(debug=DEBUG)

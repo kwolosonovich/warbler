@@ -152,8 +152,6 @@ class User(db.Model):
         return len(found_user_list) == 1
 
 
-# ************************************* ADD
-
     @classmethod
     def signup(cls, username, email, password, image_url, location, bio, header_image_url):
         """Sign up user.

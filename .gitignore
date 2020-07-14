@@ -3,3 +3,4 @@ TODO.md
 .vscode
 __pycache__
 create_database.sql
+*.code-workspace

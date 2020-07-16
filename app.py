@@ -4,7 +4,6 @@ from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_bootstrap import Bootstrap
 from sqlalchemy.exc import IntegrityError
-# from flask_login import LoginManager, logout_user
 
 from forms import UserAddForm, LoginForm, MessageForm
     # UserAddFormRestricted
@@ -17,9 +16,6 @@ DEBUG=True
 app = Flask(__name__)
 # Bootstrap(app)
 # login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view="users.login"
-
     
 # Get DB_URI from environ variable (useful for production/testing) or,
 # if not set there, use development local db.
@@ -367,13 +363,12 @@ def homepage():
 
 
     if g.user:
-        #TODO: come back to this after follow button works
 
         user_follows = (Follows
                         .query
                         .filter_by(user_following_id=g.user.id)
                         .all())
-        #TODO: ask mentor - is there a way to do the following in query using sqlalchemy 
+
         user_follows = [row.user_being_followed_id for row in user_follows]
         
         # same as previous line

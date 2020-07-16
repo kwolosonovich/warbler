@@ -55,10 +55,8 @@ class UserModelTestCase(TestCase):
         self.assertTrue(self.user1.messages)
         # self.assertEqual(self.user1.messages[0].text, "test text")
         
-        
-        # ********************** doesn't work - AttributeError: 'InstrumentedList' *************************
-
     def test_message_likes(self):
+        '''Test likes messages functionality.''' 
         message1 = Message(
             text="test text 1",
             user_id=self.id

@@ -117,17 +117,21 @@ class MessageViewTestCase(TestCase):
             self.assertTrue(response.status_code == 200)
             self.assertIn(m.text, str(response.data))
 
+    def tearDown(self):
+        res = super().tearDown()
+        db.session.rollback()
+        return res
 
-        # ********************* Does't work *********************
-
-    # def test_invalid_message_show(self):
-    #     with self.client as c:
-    #         with c.session_transaction() as sess:
-    #             sess[CURR_USER_KEY] = self.user1.id
+    def test_invalid_message_show(self):
+        print(self.user1)
+        with self.client as c:
+            with c.session_transaction() as sess:
+                # print(sess.keys())
+                sess[CURR_USER_KEY] = self.user1.id
             
-    #         response = c.get('/messages/9')
+            response = c.get('/messages/9')
 
-    #         self.assertEqual(response.status_code == 404)
+            self.assertEqual(response.status_code == 404)
 
     def test_message_delete(self):
         '''Test delete message'''
